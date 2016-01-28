@@ -7,7 +7,7 @@ Koalmon integration for Codeception
 include_once 'phar://path/to/KoalamonReporter.phar/vendor/autoload.php";
 ```
 
-```
+```yml
 # codeception.yml
 extensions:
     enabled:
