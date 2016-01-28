@@ -88,7 +88,21 @@ class KoalamonReporter extends Extension
 
     public function suite()
     {
-        $reporter = new Reporter('', $this->config['api_key'], new Client());
+        $koalamonServer = 'http://www.koalamon.com';
+        if (array_key_exists('server', $this->config)) {
+            $koalamonServer = $this->config['server'];
+        }
+        $reporter = new Reporter('', $this->config['api_key'], new Client(), $koalamonServer);
+
+        $url = '';
+        if (array_key_exists('url', $this->config)) {
+            $url = $this->config['url'];
+        }
+
+        $tool = 'Codeception';
+        if (array_key_exists('tool', $this->config)) {
+            $tool = $this->config['tool'];
+        }
 
         foreach ($this->testCollections as $testCollection => $testConfigs) {
             $failed = false;
@@ -104,16 +118,6 @@ class KoalamonReporter extends Extension
             } else {
                 $status = Event::STATUS_SUCCESS;
                 $message = '';
-            }
-
-            $url = '';
-            if (array_key_exists('url', $this->config)) {
-                $url = $this->config['url'];
-            }
-
-            $tool = 'Codeception';
-            if (array_key_exists('tool', $this->config)) {
-                $tool = $this->config['tool'];
             }
 
             $event = new Event('Codeception_' . $testCollection, $this->config['system'], $status, $tool, $message, '', $url);
