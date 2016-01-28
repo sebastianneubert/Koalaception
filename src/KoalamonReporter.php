@@ -107,11 +107,16 @@ class KoalamonReporter extends Extension
             }
 
             $url = '';
-            if (!array_key_exists('url', $this->config)) {
+            if (array_key_exists('url', $this->config)) {
                 $url = $this->config['url'];
             }
 
-            $event = new Event('Codeception_' . $testCollection, $this->config['system'], $status, 'Codeception', $message, '', $url);
+            $tool = 'Codeception';
+            if (array_key_exists('tool', $this->config)) {
+                $tool = $this->config['tool'];
+            }
+
+            $event = new Event('Codeception_' . $testCollection, $this->config['system'], $status, $tool, $message, '', $url);
             $reporter->sendEvent($event);
         }
     }
