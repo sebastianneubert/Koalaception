@@ -15,7 +15,7 @@ extensions:
     config:
         Koalamon\Extension\KoalamonReporter:
             api_key: 98208A01-9F93-4B54-B442-***********
-            system: www.tvmovie.de
+            system: www.koalamon.com
             url: 'http://drupal-jenkins/'
             tool: Codeception_Koalamon
 ```
