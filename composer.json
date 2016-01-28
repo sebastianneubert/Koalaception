@@ -1,0 +1,12 @@
+{
+  "name": "koalamon/koalabatch",
+  "description": "Tool for running defined tools over all systems accessible for a given user",
+  "require": {
+    "koalamon/koalamonclient": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Koalamon\\Extension\\": "src"
+    }
+  }
+}
