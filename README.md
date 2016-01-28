@@ -1,7 +1,14 @@
 # Koalaception
 Koalmon integration for Codeception
 
+
 ```
+// This is global bootstrap for autoloading
+include_once 'phar://' . __DIR__ . "/../module/KoalamonReporter/KoalamonReporter.phar/vendor/autoload.php";
+```
+
+```
+# codeception.yml
 extensions:
     enabled:
         - Koalamon\Extension\KoalamonReporter
