@@ -2,7 +2,7 @@
 Koalmon integration for Codeception
 
 
-```
+```php
 // This is global bootstrap for autoloading
 include_once 'phar://' . __DIR__ . "/../module/KoalamonReporter/KoalamonReporter.phar/vendor/autoload.php";
 ```
