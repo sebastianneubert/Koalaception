@@ -17,5 +17,5 @@ extensions:
             api_key: 98208A01-9F93-4B54-B442-***********
             system: www.tvmovie.de
             url: 'http://drupal-jenkins/'
-            tool: Codeception_TVMovie
+            tool: Codeception_Koalamon
 ```
