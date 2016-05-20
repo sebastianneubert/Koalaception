@@ -43,11 +43,11 @@ class KoalamonReporter extends Extension
 
     public function _initialize()
     {
-        if (!array_key_exists('api_key', $this->config)) {
-            throw new \RuntimeException('KoalamonReporterExtension: api_key not set.');
+        if (!array_key_exists('api_key', $this->config) && !getenv('KOALAMON_API_KEY')) {
+            throw new \RuntimeException('KoalamonReporterExtension: api_key in config or KOALAMON_API_KEY environment variable not set');
         }
         if (!array_key_exists('system', $this->config) && !getenv('KOALAMON_SYSTEM')) {
-            throw new \RuntimeException('KoalamonReporterExtension: system not set.');
+            throw new \RuntimeException('KoalamonReporterExtension: system in config or KOALAMON_SYSTEM environment variable not set.');
         }
     }
 
@@ -86,20 +86,52 @@ class KoalamonReporter extends Extension
         $this->fail($test);
     }
 
+    private function getSystem()
+    {
+        if (getenv('KOALAMON_SYSTEM') && strpos('${', getenv('KOALAMON_SYSTEM'), 0) === 0) {
+            $system = getenv('KOALAMON_SYSTEM');
+        } else {
+            $system = $this->config['system'];
+        }
+
+        return $system;
+    }
+
+    private function getApiKey()
+    {
+        if (getenv('KOALAMON_API_KEY') && strpos('${', getenv('KOALAMON_API_KEY'), 0) === 0) {
+            $apiKey = getenv('KOALAMON_API_KEY');
+        } else {
+            $apiKey = $this->config['api_key'];
+        }
+
+        return $apiKey;
+    }
+
+    private function getUrl()
+    {
+        $url = '';
+        if (getenv('KOALAMON_URL') && strpos('${', getenv('KOALAMON_URL'), 0) === 0) {
+            $url = getenv('KOALAMON_URL');
+        } elseif (array_key_exists('url', $this->config)) {
+            $url = $this->config['url'];
+        }
+        return $url;
+    }
+
     public function suite()
     {
-        $koalamonServer = 'http://www.koalamon.com';
+        $tool = 'Codeception';
+        $koalamonServer = 'http://monitor.koalamon.com';
+
         if (array_key_exists('server', $this->config)) {
             $koalamonServer = $this->config['server'];
         }
-        $reporter = new Reporter('', $this->config['api_key'], new Client(), $koalamonServer);
 
-        $url = '';
-        if (array_key_exists('url', $this->config)) {
-            $url = $this->config['url'];
-        }
+        $reporter = new Reporter('', $this->getApiKey(), new Client(), $koalamonServer);
 
-        $tool = 'Codeception';
+        $url = $this->getUrl();
+
         if (array_key_exists('tool', $this->config)) {
             $tool = $this->config['tool'];
         }
@@ -120,14 +152,11 @@ class KoalamonReporter extends Extension
                 $message = '';
             }
 
-            if (getenv('KOALAMON_SYSTEM')) {
-                $system = getenv('KOALAMON_SYSTEM');
-            } else {
-                $system = $this->config['system'];
-            }
+            $system = $this->getSystem();
 
+            $eventIdentifier = $tool . '_' . $system . '_' . $testCollection;
 
-            $event = new Event('Codeception_' . $testCollection, $system, $status, $tool, $message, '', $url);
+            $event = new Event($eventIdentifier, $system, $status, $tool, $message, '', $url);
             $reporter->sendEvent($event);
         }
     }
