@@ -44,10 +44,10 @@ class KoalamonReporter extends Extension
     public function _initialize()
     {
         if (!array_key_exists('api_key', $this->config)) {
-            throw new \RuntimeException('KoalamonReporterExtension: api_key not set');
+            throw new \RuntimeException('KoalamonReporterExtension: api_key not set.');
         }
-        if (!array_key_exists('system', $this->config)) {
-            throw new \RuntimeException('KoalamonReporterExtension: system not set');
+        if (!array_key_exists('system', $this->config) && !getenv('KOALAMON_SYSTEM')) {
+            throw new \RuntimeException('KoalamonReporterExtension: system not set.');
         }
     }
 
@@ -120,7 +120,14 @@ class KoalamonReporter extends Extension
                 $message = '';
             }
 
-            $event = new Event('Codeception_' . $testCollection, $this->config['system'], $status, $tool, $message, '', $url);
+            if (getenv('KOALAMON_SYSTEM')) {
+                $system = getenv('KOALAMON_SYSTEM');
+            } else {
+                $system = $this->config['system'];
+            }
+
+
+            $event = new Event('Codeception_' . $testCollection, $system, $status, $tool, $message, '', $url);
             $reporter->sendEvent($event);
         }
     }
