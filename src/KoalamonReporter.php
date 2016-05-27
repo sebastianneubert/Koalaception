@@ -4,6 +4,7 @@ namespace Koalamon\Extension;
 use Codeception\Event\StepEvent;
 use Codeception\Event\TestEvent;
 use Codeception\Events;
+use Codeception\Exception\ConfigurationException;
 use Codeception\Extension;
 use Codeception\Step;
 use GuzzleHttp\Client;
@@ -88,10 +89,13 @@ class KoalamonReporter extends Extension
 
     private function getSystem()
     {
-        if (getenv('KOALAMON_SYSTEM') && strpos('${', getenv('KOALAMON_SYSTEM'), 0) === 0) {
+        if (getenv('KOALAMON_SYSTEM')) {
             $system = getenv('KOALAMON_SYSTEM');
-        } else {
+        } elseif(isset($this->config['system'])) {
             $system = $this->config['system'];
+        } else {
+            $message = 'Please set a koalamon system as environment variable KOALAMON_SYSTEM or in the extension config as "system_identifier"';
+            throw new ConfigurationException($message);
         }
 
         return $system;
@@ -99,10 +103,13 @@ class KoalamonReporter extends Extension
 
     private function getApiKey()
     {
-        if (getenv('KOALAMON_API_KEY') && strpos('${', getenv('KOALAMON_API_KEY'), 0) === 0) {
+        if (getenv('KOALAMON_API_KEY')) {
             $apiKey = getenv('KOALAMON_API_KEY');
-        } else {
+        } elseif(isset($this->config['api_key'])) {
             $apiKey = $this->config['api_key'];
+        } else {
+            $message = 'Please set a koalamon apikey as environment variable KOALAMON_API_KEY or in the extension config as "api_key"';
+            throw new ConfigurationException($message);
         }
 
         return $apiKey;
@@ -111,7 +118,7 @@ class KoalamonReporter extends Extension
     private function getUrl()
     {
         $url = '';
-        if (getenv('KOALAMON_URL') && strpos('${', getenv('KOALAMON_URL'), 0) === 0) {
+        if (getenv('KOALAMON_URL')) {
             $url = getenv('KOALAMON_URL');
         } elseif (array_key_exists('url', $this->config)) {
             $url = $this->config['url'];
