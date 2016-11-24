@@ -6,7 +6,6 @@ use Codeception\Event\TestEvent;
 use Codeception\Events;
 use Codeception\Exception\ConfigurationException;
 use Codeception\Extension;
-use Codeception\Step;
 use GuzzleHttp\Client;
 use Koalamon\Client\Reporter\Event;
 use Koalamon\Client\Reporter\Reporter;
@@ -91,7 +90,7 @@ class KoalamonReporter extends Extension
     {
         if (getenv('KOALAMON_SYSTEM')) {
             $system = getenv('KOALAMON_SYSTEM');
-        } elseif(isset($this->config['system'])) {
+        } elseif (isset($this->config['system'])) {
             $system = $this->config['system'];
         } else {
             $message = 'Please set a koalamon system as environment variable KOALAMON_SYSTEM or in the extension config as "system_identifier"';
@@ -105,7 +104,7 @@ class KoalamonReporter extends Extension
     {
         if (getenv('KOALAMON_API_KEY')) {
             $apiKey = getenv('KOALAMON_API_KEY');
-        } elseif(isset($this->config['api_key'])) {
+        } elseif (isset($this->config['api_key'])) {
             $apiKey = $this->config['api_key'];
         } else {
             $message = 'Please set a koalamon apikey as environment variable KOALAMON_API_KEY or in the extension config as "api_key"';
@@ -148,7 +147,7 @@ class KoalamonReporter extends Extension
             $message = "Failed running '" . $testCollection . "' in " . basename($testConfigs['file']) . "<ul>";
             foreach ($testConfigs['tests'] as $testName) {
                 $failed = true;
-                $message .= '<li>' . $testName['name'] . " <br>Step: " . $testName['lastStep'] . ').</li>';
+                $message .= '<li>' . $testName['name'] . ' <br><pre>Step: ' . $testName['lastStep'] . '.</pre></li>';
             }
             $message .= '</ul>';
 
@@ -163,7 +162,7 @@ class KoalamonReporter extends Extension
 
             $eventIdentifier = $tool . '_' . $system . '_' . $testCollection;
 
-            $event = new Event($eventIdentifier, $system, $status, $tool, $message, '', $url);
+            $event = new Event($eventIdentifier, $system, $status, $tool, $message, null, $url);
             $reporter->sendEvent($event);
         }
     }
