@@ -165,6 +165,12 @@ class KoalamonReporter extends Extension
             $eventIdentifier = $tool . '_' . $system . '_' . $testCollection;
 
             $event = new Event($eventIdentifier, $system, $status, $tool, $message, null, $url);
+
+            if (getenv('BUILD_URL')) {
+                $event->addAttribute(new Event\Attribute('jenkins_url', getenv('BUILD_URL')));
+            } elseif (array_key_exists('url', $this->config)) {
+                $event->addAttribute(new Event\Attribute('jenkins_url', $this->config['url']));
+            }
             $reporter->sendEvent($event);
         }
     }
